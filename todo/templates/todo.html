@@ -1,92 +1,96 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
-    <div class="container text-center mt-3">
-        <div class="row text-center">
-            <div class="col">
-                <img src="{% static 'images/to-do-list.png' %}" height="300px" alt="todo">
-            </div>
-        </div>
-        <div class="row text-center">
-            <div class="col">
-                <div style="padding-top: 10px;">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask" style="border-radius: 40px;">
-                      + Add Your Tasks
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add note Modal -->
-    <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="addTaskTitle" aria-hidden="true">
+<div class="container text-center mt-3">
+   <div class="row text-center">
+      <div class="col">
+         <img src="{% static 'images/to-do-list.png' %}" height="300px" alt="todo">
+      </div>
+   </div>
+   <div class="row text-center">
+      <div class="col">
+         <div style="padding-top: 10px;">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask"
+               style="border-radius: 40px;">
+            + Add Your Tasks
+            </button>
+         </div>
+      </div>
+   </div>
+   <div class="modal fade" id="addTask" tabindex="-1" role="dialog" aria-labelledby="addTaskTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="row">
-                {% if form %}
-                <div class="col text-center" style="padding: 30px;">
-                    <form method="POST" action="{% url 'tasks' %}">
+         <div class="modal-content">
+            <div class="modal-body">
+               <div class="row">
+                  {% if form %}
+                  <div class="col text-center" style="padding: 30px;">
+                     <form method="POST" action="{% url 'tasks' %}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="form-group col text-center">
-                                {{ form.title }}
-                            </div>
+                           <div class="form-group col text-center">
+                              {{ form.title }}
+                           </div>
                         </div>
                         <div class="row mt-3">
-                            <div class="form-group col text-center">
-                                {{ form.description}}
-                            </div>
+                           <div class="form-group col text-center">
+                              {{ form.description}}
+                           </div>
                         </div>
                         <div class="row mt-3">
-                            <div class="col-7">
-                                {{ form.priority}}
-                            </div>
-                            <div class="col-5">
-                                <div class="btn-group float-right" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Add</button>
-                                </div>
-                            </div>
+                           <div class="col-7">
+                              {{ form.priority}}
+                           </div>
+                           <div class="col-5">
+                              <div class="btn-group float-right" role="group" aria-label="Basic example">
+                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                 <button type="submit" class="btn btn-primary">Add</button>
+                              </div>
+                           </div>
                         </div>
-                    </form>
-                </div>
-                {% endif %}
+                     </form>
+                  </div>
+                  {% endif %}
+               </div>
             </div>
-          </div>
-        </div>
+         </div>
       </div>
-    </div>
-    <div class="row" style="margin-top: 10px;">
-        <div class="col-lg-6 col-md-6">
-            {% for task in tasks %}
-                <div class="card btn-block" style="margin-top: 10px; border-radius: 0px; padding: 10px; background-color: #fafafa">
-                    <div class="row">
-                        <div class="col-9">
-                            <a href="#" data-toggle="collapse" data-target="#{{task.description}}" style="text-decoration: none;" class="{% if task.completed %}text-decoration-line-through{% endif %} {% if task.priority == "high" %}text-danger {% elif task.priority == "medium" %}text-primary {% else %}text-warning {% endif %}">{{ task.title }}</a>
-                            <div class="collapse" id="{{task.description}}">
-                                <div class="row">
-                                    <div class="col">
-                                        {{ task.description }}
-                                    </div>
-                                </div>
-                            </div>
+   </div>
+   <div class="justify-content-center row" style="margin-top: 10px;">
+      <div class="col-lg-6 col-md-6">
+         {% for task in tasks %}
+         <div class="card btn-block"
+            style="margin-top: 10px; border-radius: 0px; padding: 10px; background-color: #fafafa">
+            <div class="row text-start">
+               <div class="col-9">
+                  <a href="#" data-toggle="collapse" data-target="#{{task.description}}" style="text-decoration: none;"
+                  class="{% if task.completed %}text-decoration-line-through{% endif %}
+                  {% if task.priority == "high" %}text-danger {% elif task.priority == "medium" %}text-primary {% else %}text-warning {% endif %}">
+                  {{task.title }}</a>
+                  <div class="collapse" id="{{task.description}}">
+                     <div class="row">
+                        <div class="col">
+                           {{ task.description }}
                         </div>
-                        <div class="col-3">
-                            <div class="btn-group float-end" role="group">
-                                <a href="{% url 'completed_task' task.pk %}" data-toggle="tooltip" title="{% if task.complete %} Mark as Incomplete {% else %} Mark as Complete {% endif %}">&#10004;</a>
-                                <a href="{% url 'delete_task' task.pk %}" style="padding-left: 10px;" data-toggle="tooltip" title="Delete">&#10007;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="col-lg-2 col-md-2"></div>
-    </div>
-
-    <div class="text-center" style="padding-top: 20px;">
-        <p> Made with <img src="{% static 'images/red-heart.svg' %}" alt="love" style="height: 18px !important;padding-bottom: 2px;"> by <strong><a href="https://github.com/im-srj" target="_blank">I'mSRJ</a></strong></p>
-    </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-3">
+                  <div class="btn-group float-end" role="group">
+                     <a href="{% url 'completed_task' task.pk %}" data-toggle="tooltip"
+                        title="{% if task.complete %} Mark as Incomplete {% else %} Mark as Complete {% endif %}">&#10004;</a>
+                     <a href="{% url 'delete_task' task.pk %}" style="padding-left: 10px;" data-toggle="tooltip"
+                        title="Delete">&#10007;</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endfor %}
+      </div>
+   </div>
+</div>
+<div class="text-center" style="padding-top: 20px;">
+   <p> Made with <img src="{% static 'images/red-heart.svg' %}" alt="love"
+      style="height: 18px !important;padding-bottom: 2px;"> by <strong><a href="https://github.com/im-srj"
+      target="_blank">I'mSRJ</a></strong></p>
+</div>
 {% endblock %}
